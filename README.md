@@ -17,7 +17,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=password   # ganti sesuai password postgres Anda
-DB_NAME=task_management
+DB_NAME=article_db
 DB_SSLMODE=disable
 ```
 
@@ -28,7 +28,7 @@ go mod tidy
 
 ## 4. Buat database (jika belum ada)
 ```bash
-CREATE DATABASE task_management;
+CREATE DATABASE article_db;
 ```
 
 ## 5. Jalankan migration
