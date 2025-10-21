@@ -1,0 +1,193 @@
+basePath: /api
+definitions:
+  domain.Article:
+    properties:
+      category:
+        type: string
+      content:
+        type: string
+      created_date:
+        type: string
+      id:
+        type: integer
+      status:
+        $ref: '#/definitions/domain.ArticleStatus'
+      title:
+        type: string
+      updated_date:
+        type: string
+    type: object
+  domain.ArticleStatus:
+    enum:
+    - Publish
+    - Draft
+    - Trash
+    type: string
+    x-enum-varnames:
+    - StatusPublish
+    - StatusDraft
+    - StatusTrash
+  usecase.CreateArticleRequest:
+    properties:
+      category:
+        minLength: 3
+        type: string
+      content:
+        minLength: 200
+        type: string
+      status:
+        type: string
+      title:
+        minLength: 20
+        type: string
+    required:
+    - category
+    - content
+    - status
+    - title
+    type: object
+  usecase.UpdateArticleRequest:
+    properties:
+      category:
+        minLength: 3
+        type: string
+      content:
+        minLength: 200
+        type: string
+      status:
+        type: string
+      title:
+        minLength: 20
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API documentation for Article App (Echo + Golang).
+  title: Article API
+  version: "1.0"
+paths:
+  /v1/article:
+    post:
+      consumes:
+      - application/json
+      description: Create a new article with title, content, category, and status
+      parameters:
+      - description: Article Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.CreateArticleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Article'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new article
+      tags:
+      - Articles
+  /v1/article/{id}:
+    delete:
+      description: Delete an article by its ID
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete an article
+      tags:
+      - Articles
+    get:
+      description: Get single article by its ID
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Article'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get article by ID
+      tags:
+      - Articles
+    put:
+      consumes:
+      - application/json
+      description: Update an article's title, content, category, or status
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Article
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecase.UpdateArticleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Article'
+      summary: Update an article
+      tags:
+      - Articles
+  /v1/article/{limit}/{offset}:
+    get:
+      description: Get paginated list of articles using limit and offset
+      parameters:
+      - description: Limit
+        in: path
+        name: limit
+        required: true
+        type: integer
+      - description: Offset
+        in: path
+        name: offset
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Article'
+            type: array
+      summary: Get list of articles
+      tags:
+      - Articles
+swagger: "2.0"
